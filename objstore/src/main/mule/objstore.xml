@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a5e1903b-5e41-45db-a96b-75532fda7863" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="objstoreFlow" doc:id="f231741c-c96a-489d-9eb9-3a2a00bb36f0" >
+		<http:listener doc:name="Listener" doc:id="bcceec6d-ac75-4fff-a5cd-55095f8439db" config-ref="HTTP_Listener_config" path="obj"/>
+		<set-variable value="#[attributes.queryParams.name]" doc:name="Set Variable" doc:id="d1ce2c24-92fc-4637-b173-a3e3ae363b04" variableName="name"/>
+		<set-variable value="#[attributes.queryParams.id]" doc:name="Set Variable" doc:id="83144e57-7e0d-41f0-8582-bdbb71a0c9fb" variableName="id"/>
+		<os:store doc:name="Store" doc:id="4312fa2a-01a6-43a2-9d2e-1175eb9ea9c9" key="#[vars.name]">
+			<os:value ><![CDATA[#[vars.id]]]></os:value>
+		</os:store>
+		<logger level="INFO" doc:name="Logger" doc:id="a3667267-50b6-4023-ac5f-31e175d8abaa" message="#[payload]"/>
+	</flow>
+	<flow name="objstoreFlow1" doc:id="84bed5d6-46da-4392-bf9a-f9263f4821e0" >
+		<http:listener doc:name="Listener" doc:id="fa60154d-0c73-4fdf-ae70-5f4badd22a99" config-ref="HTTP_Listener_config" path="retriveall"/>
+		<os:retrieve-all doc:name="Retrieve all" doc:id="cd9ba181-8970-4b64-a550-5313cb5a97a0"/>
+		<logger level="INFO" doc:name="Logger" doc:id="24e2903f-b3fc-42eb-b2c4-affbcc23b72c" message="#[payload]"/>
+	</flow>
+</mule>
